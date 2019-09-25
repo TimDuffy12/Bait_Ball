@@ -1,6 +1,6 @@
-function comb_ints=combineInts(swap_pairs)
+function comb_ints=combineInts(pairs)
 %Combines overlapping intervals
-comb_ints = swap_pairs;
+comb_ints = pairs;
 n = size(comb_ints, 1);
 del_rows = zeros(n, 1);
 
