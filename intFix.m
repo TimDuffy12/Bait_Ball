@@ -1,4 +1,4 @@
-function new_ints = arctanFix(ints)
+function new_ints = intFix(ints)
 
 new_ints = ints;
 
