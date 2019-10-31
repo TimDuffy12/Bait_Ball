@@ -16,22 +16,22 @@ A = coords(Idx(1,:),:); %neighbors
 B = A - A(1,:);         %shifted to origin
 B = B(2:6,:);
 
-%fishInts
+%Get intervals based on fish coordinates
 intervals = fishInts(B,rho);
 
-%orderedPairs
+%Sort pairs from smallest to largest left endpoint
 intervals = orderedPairs(intervals);
 
-%combineInts
+%Combine overlapping intervals
 intervals = combineInts(intervals);
 
-%intFix
+%Normalizes intervals to be between 0 and 2pi
 intervals = intFix(intervals);
 
-%newDirection
+%Calculates the new direction to move in
 direction = newDirection(intervals);
 
-%New Coords
+%Calculates the new coordinates for the fish
 newCoords = [newCoords; direction + coords(i,:)];
 
 end
