@@ -1,5 +1,5 @@
 m = 10; %number of fish
-rho = 0.1;
+rho = 0.1; %radius of each fish
 
 coords = (10*rand(m,2) - 5);
 newCoords = [];
