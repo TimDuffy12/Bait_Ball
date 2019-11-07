@@ -1,12 +1,14 @@
-m = 10; %number of fish
+m = 50; %number of fish
 rho = 0.1; %radius of each fish
+h = 0.1; %stepsize
 
 coords = (10*rand(m,2) - 5);
 newCoords = [];
 
+for j=1:300
 for i=1:m
-%K nearest
-k = 6;
+%k nearest neighbors, # of neighbors is k-1
+k = 10;
 Idx = knearest(coords, k);
 Idx = Idx(i,:);
 %n = size(Idx(1,:));
@@ -14,7 +16,7 @@ Idx = Idx(i,:);
 %translate to origin 
 A = coords(Idx(1,:),:); %neighbors
 B = A - A(1,:);         %shifted to origin
-B = B(2:6,:);
+B = B(2:k,:);
 
 %Get intervals based on fish coordinates
 intervals = fishInts(B,rho);
@@ -32,11 +34,17 @@ intervals = intFix(intervals);
 direction = newDirection(intervals);
 
 %Calculates the new coordinates for the fish
-newCoords = [newCoords; direction + coords(i,:)];
+newCoords(i,:) = h*direction + coords(i,:);
 
 end
 
-%coords = newCoords;
-scatter(coords(:,1), coords(:,2))
-hold on
-scatter(newCoords(:,1), newCoords(:,2))
+%plot(coords(:,1), coords(:,2),'bo')
+%hold on
+plot(newCoords(:,1), newCoords(:,2),'bo');
+xlim([-5 5])
+ylim([-5 5])
+
+f(j) = getframe;
+
+coords = newCoords;
+end
