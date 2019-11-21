@@ -1,17 +1,17 @@
-m = 50; %number of fish
+n = 50; %number of fish
 rho = 0.1; %radius of each fish
 h = 0.1; %stepsize
 
-coords = (10*rand(m,2) - 5);
+coords = (10*rand(n,2) - 5);
 newCoords = [];
 
 for j=1:300
-for i=1:m
+for i=1:n
 %k nearest neighbors, # of neighbors is k-1
-k = 10;
+k = 50;
 Idx = knearest(coords, k);
 Idx = Idx(i,:);
-%n = size(Idx(1,:));
+
 
 %translate to origin 
 A = coords(Idx(1,:),:); %neighbors
@@ -35,6 +35,8 @@ direction = newDirection(intervals);
 
 %Calculates the new coordinates for the fish
 newCoords(i,:) = h*direction + coords(i,:);
+
+
 
 end
 

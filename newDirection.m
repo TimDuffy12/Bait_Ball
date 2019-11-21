@@ -1,8 +1,10 @@
 function dir = newDirection(ints)
 
+theta = ints(:);
+
 n = size(ints, 1);
 
-dir = sum([cos(ints(:,1)) sin(ints(:,2))]);
+dir = sum([cos(theta) sin(theta)]);
 
 dir = dir./n;
 
