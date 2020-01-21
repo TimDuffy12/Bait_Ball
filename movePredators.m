@@ -1,11 +1,11 @@
-function newPredCoords = movePredators(coords, r)
+function newPredCoords = movePredators(coords, t, r0, k, deltatheta)
 h = 0.1; %stepsize
 
 theta = atan2(coords(:,2), coords(:,1));
+% r0 = sqrt(coords(:,1).^2 + coords(:,2).^2);
+r = (r0 - k).*exp(-t) + k;
 
-direction = [r*cos(1) r*sin(1)];
+newPredCoords = [r.*cos(theta+deltatheta) r.*sin(theta+deltatheta)];
 
-newPredCoords = h*direction + coords;
-
-hold on, plot(newPredCoords(:,1), newPredCoords(:,2), 'or')
+%hold on, plot(newPredCoords(:,1), newPredCoords(:,2), 'or')
 end

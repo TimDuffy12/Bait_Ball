@@ -1,5 +1,6 @@
 n = 50; %number of fish
 rho = 0.1; %radius of each fish
+rho2 = 0.2; %radius of each predator
 h = 1; %stepsize
 minr = 5; %radius of bait ball
 
@@ -24,11 +25,17 @@ k = 50;
 Idx = knearest(coords, k);
 Idx = Idx(i,:);
 
+%l nearest for predators
+l = 1;
+predIdx = predNeighbors(coords, newPredCoords, l);
+
 
 %translate to origin 
 A = coords(Idx(1,:),:); %neighbors
 B = A - A(1,:);         %shifted to origin
 B = B(2:k,:);
+
+predIntervals = predInts(coords, predCoords, rho2);
 
 %Get intervals based on fish coordinates
 intervals = fishInts(B,rho);
@@ -42,8 +49,13 @@ intervals = combineInts(intervals);
 %Normalizes intervals to be between 0 and 2pi
 intervals = intFix(intervals);
 
-%Calculates the new direction to move in
+%Calculates the new direction to move in without regard to predators
 direction = newDirection(intervals);
+
+%New direction based on predators
+directionAwayFromPredators = newDirection2(predIntervals);
+
+direction + directionAway
 
 %Calculates the new coordinates for the fish
 newCoords(i,:) = h*direction + coords(i,:);
