@@ -7,7 +7,7 @@ minr = 5; %radius of bait ball
 coords = (10*rand(n,2) - 5);
 newCoords = [];
 
-predCoords = spawnPredators(5, 1.1);
+predCoords = spawnPredators(10, 1.1);
 newPredCoords = [];
 
 r0 = sqrt(predCoords(:,1).^2 + predCoords(:,2).^2); %initial distance from origin to predators
@@ -28,14 +28,16 @@ Idx = Idx(i,:);
 %l nearest for predators
 l = 1;
 predIdx = predNeighbors(coords, newPredCoords, l);
+C = coords(Idx(1,:),:); %neighbors
+D = C - C(1,:);         %shifted to origin
+D = D(2:k,:);
 
-
-%translate to origin 
+%translate to origin
 A = coords(Idx(1,:),:); %neighbors
 B = A - A(1,:);         %shifted to origin
 B = B(2:k,:);
 
-predIntervals = predInts(coords, predCoords, rho2);
+predIntervals = predInts(B, newPredCoords, rho2);
 
 %Get intervals based on fish coordinates
 intervals = fishInts(B,rho);
@@ -55,10 +57,12 @@ direction = newDirection(intervals);
 %New direction based on predators
 directionAwayFromPredators = newDirection2(predIntervals);
 
-direction + directionAway
+%Average of directions
+%dirTest = (direction+directionAwayFromPredators)./2;
 
 %Calculates the new coordinates for the fish
-newCoords(i,:) = h*direction + coords(i,:);
+newCoords(i,:) = 1*(.15*direction + .05*(directionAwayFromPredators)) + coords(i,:);
+%newCoords(i,:) = .25*(dirTest) + coords(i,:);
 
 
 
