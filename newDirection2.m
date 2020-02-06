@@ -6,6 +6,6 @@ n = size(ints, 1);
 
 dir = sum([cos(theta) sin(theta)]);
 
-dir = (dir./n)+pi;
+dir = (dir./n)*-1;
 
 end
