@@ -64,10 +64,9 @@ directionAwayFromPredators = newDirection2(predIntervals);
 %Weights for directions
 fw = min(distanceToPred, 10)/10;
 pw = (10 - min(distanceToPred, 10))/10;
-mw = 0.5;
 
 %wDriection = weighted direction
-wDirection = fw*direction + pw*(directionAwayFromPredators) + mw*previousDirection;
+wDirection = fw*direction + pw*(directionAwayFromPredators);
 %Calculates the new coordinates for the fish
 newCoords(i,:) = h*wDirection + coords(i,:);
 %newCoords(i,:) = .25*(dirTest) + coords(i,:);
@@ -80,8 +79,8 @@ end
 %hold on
 plot(newCoords(:,1), newCoords(:,2),'go', newPredCoords(:,1), newPredCoords(:,2), 'ro',newCoords(n,1), newCoords(n,2),'bo');
 %plot(newPredCoords(:,1), newPredCoords(:,2), 'ro');
-xlim([-6 6])
-ylim([-6 6])
+xlim([-10 10])
+ylim([-10 10])
 
 f(j) = getframe;
 
