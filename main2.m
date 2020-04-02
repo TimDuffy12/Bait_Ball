@@ -8,6 +8,7 @@ coords = (10*rand(n,2) - 5);
 centerOfMass = [mean(coords(:,1)), mean(coords(:,2))];
 newCoords = [];
 previousDirection = zeros(n,2);
+predDirection = zeros(20,2);
 
 predCoords = spawnPredators(20, 2.1);
 newPredCoords = [];
@@ -20,6 +21,8 @@ for j=1:300
 %newPredCoords = movePredators(predCoords, j, r0, minr, h./((r0-minr).*exp(-j+6)+minr));
 r = (r0 - minr).*exp(-.05*j) + minr;
 newPredCoords = [r.*cos(theta+j*h./((r0-minr).*exp(-j+6)+minr)) r.*sin(theta+j*h./((r0-minr).*exp(-j+6)+minr))];
+predDirection = newPredCoords - predCoords;
+predCoords = newPredCoords;
 
 for i=1:n
     %k nearest neighbors, # of neighbors is k-1
@@ -28,10 +31,10 @@ for i=1:n
     Idx = Idx(i,:);
     
     %l nearest neighbors for predators
-    l = 3;
+    l = 1;
     predIdx = predNeighbors(coords, newPredCoords, l);
-    predIdx = predIdx(i,:);
-    C = newPredCoords(predIdx(1,:),:); %neighbors
+    preds = predIdx(i,:);
+    C = newPredCoords(preds(1,:),:); %neighbors
     D = C - coords(i,:);         %shifted to origin
     distanceToPred = sqrt(D(1,1)^2 + D(1,2)^2); %distance to nearest pred
     %used later for weighting
@@ -54,27 +57,30 @@ for i=1:n
     
     %Normalizes intervals to be between 0 and 2pi
     intervals = intFix(intervals);
-    predeIntervals = intFix(predIntervals);
+    predIntervals = intFix(predIntervals);
     
     %Calculates the new direction to move in without regard to predators
     direction = newDirection(intervals);
     
     %New direction based on predators
     directionAwayFromPredators = newDirection2(predIntervals);
+    directionWithPredators = mean(predDirection(predIdx(:)));
     
     distanceToCenter = sqrt((coords(i,1) - centerOfMass(:,1))^2 + (coords(i,2) - centerOfMass(:,2))^2);
     
-    fw = 0.5*min(distanceToPred, 10)/10;
-    pw = 0.35*(10 - min(distanceToPred, 10))/10;
+    fw = 0.3*min(distanceToPred, 10)/10;
+    pw = 0.25*(10 - min(distanceToPred, 10))/10;
+    wwp = .3;
     mw = 0.15;
     rw = 0;
     
-    if distanceToCenter <= 0.1
+    if distanceToCenter <= 1
         %Weights for directions
-        fw = 0.3*min(distanceToPred, 10)/10;
+        fw = 0.1*min(distanceToPred, 10)/10;
         pw = 0.35*(10 - min(distanceToPred, 10))/10;
-        mw = 0.15;
-        rw = 0.2;
+        wwp = 0.1;
+        mw = 0.25;
+        rw = 0.1;
     end
     
 
@@ -90,7 +96,7 @@ for i=1:n
     resVector = 1./sqrt((coords(i,1) - centerOfMass(:,1))^2 + (coords(i,2) - centerOfMass(:,2))^2);
     
     %wDriection = weighted direction
-    wDirection = fw*direction + pw*(directionAwayFromPredators) + mw.*previousDirection(i,:) + rw.*resVector;
+    wDirection = fw*direction + pw*directionAwayFromPredators + mw.*previousDirection(i,:) + rw.*resVector + wwp.*directionWithPredators;
     %Calculates the new coordinates for the fish
     newCoords(i,:) = h*wDirection + coords(i,:);
     %newCoords(i,:) = .25*(dirTest) + coords(i,:);
@@ -98,6 +104,7 @@ for i=1:n
     
     
 end
+
 
 %plot(coords(:,1), coords(:,2),'bo')
 %hold on
